@@ -1,0 +1,27 @@
+# Unreal Engine build artefacts
+Binaries/
+DerivedDataCache/
+Intermediate/
+Saved/
+Build/
+*.opensdf
+*.sdf
+*.sln
+*.suo
+*.xcodeproj
+*.xcworkspace
+
+# Unreal project generated files
+MirUE/.vs/
+MirUE/*.VC.db
+MirUE/*.VC.opendb
+
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Converter output
+out/
+*.Lib
+!Tools/**/fixtures/*.Lib
