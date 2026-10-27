@@ -20,7 +20,7 @@ and `System.Text.Json`. It builds and runs on Linux/macOS/Windows.
 
 ```bash
 dotnet build Tools/CrystalAssetExport/CrystalAssetExport.csproj
-dotnet run --project Tools/CrystalAssetExport -- selftest        # 72 assertions, no data pack needed
+dotnet run --project Tools/CrystalAssetExport -- selftest        # 73 assertions, no data pack needed
 dotnet run --project Tools/CrystalAssetExport -- all "C:/CrystalClient" --out ./export
 ```
 

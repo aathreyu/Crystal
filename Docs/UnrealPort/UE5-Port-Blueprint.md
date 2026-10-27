@@ -316,7 +316,7 @@ Notes that bite:
 It is a dependency-free .NET 8 console app (no SlimDX, no `System.Drawing`) that ports
 the `.Lib` v2/v3 reader and all nine map loaders, writes PNGs + `library.json`
 (pivots, masks, frame tables) and map grids as JSON or a compact `.bin`, and ships a
-`selftest` command with 72 assertions over synthetic fixtures.
+`selftest` command with 73 assertions over synthetic fixtures.
 
 Do not reuse `Client/MirGraphics/MLibrary.cs` directly (it is welded to D3D9) — the
 tool re-implements its ~80 lines of parsing, which is what you want for any port.
