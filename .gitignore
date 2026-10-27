@@ -364,3 +364,7 @@ FodyWeavers.xsd
 /Build
 /.idea/.idea.Legend of Mir/.idea
 /.idea/config
+
+# CrystalAssetExport default output
+/export
+/Tools/CrystalAssetExport/export

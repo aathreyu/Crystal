@@ -310,20 +310,27 @@ Notes that bite:
   same pivot.
 * Frame `Skip` exists for actions whose sprites are interleaved with other actions.
 
-### 5.2 Exporter (write this, ~1 day)
+### 5.2 Exporter (implemented)
 
-Create a `Tools/MirAssetExport` .NET console project that **does not reference
-SlimDX**. Do not reuse `Client/MirGraphics/MLibrary.cs` (it is welded to D3D9) — port
-its ~80 lines of parsing into plain code, or copy the shape of
-`LibraryViewer/MLibrary.cs`.
+**Status: done — see [`Tools/CrystalAssetExport`](../../Tools/CrystalAssetExport/README.md).**
+It is a dependency-free .NET 8 console app (no SlimDX, no `System.Drawing`) that ports
+the `.Lib` v2/v3 reader and all nine map loaders, writes PNGs + `library.json`
+(pivots, masks, frame tables) and map grids as JSON or a compact `.bin`, and ships a
+`selftest` command with 72 assertions over synthetic fixtures.
+
+Do not reuse `Client/MirGraphics/MLibrary.cs` directly (it is welded to D3D9) — the
+tool re-implements its ~80 lines of parsing, which is what you want for any port.
 
 Output per library:
 
 ```
-out/Data/Items/0001.png
-out/Data/Items/0001.json   { "index": 1, "w": 64, "h": 48, "x": 12, "y": -8,
-                             "shadowX": 0, "shadowY": 0, "mask": "0001_m.png" }
-out/Data/Items/frames.json { "Standing": { "start": 0, "count": 4, "skip": 0, "interval": 450, ... } }
+out/Data/Items/0001/00001.png
+out/Data/Items/0001/00001_mask.png
+out/Data/Items/0001/library.json  { "version": 3, "images": [ { "index": 1, "width": 64,
+                                    "height": 48, "x": 12, "y": -8, "shadowX": 0,
+                                    "shadowY": 0, "mask": { ... } } ],
+                                    "frames": { "Standing": { "start": 0, "count": 4,
+                                                "skip": 0, "interval": 450, ... } } }
 ```
 
 Then either:
@@ -512,7 +519,7 @@ quirks (`ArmourOffSet = -416` when mounted, alternate "AR" libraries for archer,
 
 | # | Milestone | Deliverable / acceptance | Solo effort |
 |---|---|---|---:|
-| M0 | Tooling | `.Lib`→PNG+JSON exporter; `.map`→JSON; packet fixtures (`GetPacketBytes` dumps) | 1–2 wk |
+| M0 | Tooling | `.Lib`→PNG+JSON exporter; `.map`→JSON/`.bin`; packet fixtures (`GetPacketBytes` dumps) | **done** (exporter) |
 | M1 | Handshake | UE client connects to a stock Crystal server, passes the MD5 gate, logs in, lists characters | 2 wk |
 | M2 | World | map renders correctly at 1024×768 ortho; player walks/turns with prediction; camera exact | 3–4 wk |
 | M3 | Entities | other players/monsters/items animate, sort correctly, attacks + damage numbers | 4–6 wk |
@@ -572,9 +579,10 @@ roughly half the total work; start it in parallel as soon as M2 renders.
 
 ## 12. First three commits (concrete)
 
-1. `Tools/MirAssetExport` — console app: parse `.Lib` v3 and `.map` (port `MLibrary`
-   parsing + `MapCode.LoadMapType0..7`), emit PNG/JSON. Verify by round-tripping a known
-   sprite size (`MLibrary.GetSize`) and a known map dimension.
+1. **DONE** — `Tools/CrystalAssetExport`: parses `.Lib` v2/v3 and all `.map` formats
+   (ported from `MLibrary` + `MapCode.LoadMapType0..7/100`), emits PNG + `library.json`
+   and map `.json`/`.bin`. Verified by `dotnet run --project Tools/CrystalAssetExport -- selftest`.
+   See [`Tools/CrystalAssetExport/README.md`](../../Tools/CrystalAssetExport/README.md).
 2. `Source/MirCore` + `Source/MirNet` — reader/writer, framing, `ClientVersion` + `Login`
    handshake, plus the golden-fixture tests from §4.6. Acceptance: connect to a stock
    server and reach the first character-select packet.
